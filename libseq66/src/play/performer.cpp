@@ -5630,7 +5630,8 @@ performer::midi_control_event (const event & ev, bool recording)
                     automation::action a = incoming.action_code();
                     bool invert = incoming.inverse_active();
                     int d0 = incoming.d0();
-                    int d1 = incoming.d1();
+                    // int d1 = incoming.d1();
+                    int d1 = ev.d1();
                     int index = incoming.control_code(); /* in lieu of d1() */
                     good = mop.call(a, d0, d1, index, invert);
                 }
