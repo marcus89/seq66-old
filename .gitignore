@@ -199,3 +199,5 @@ doc/dox/seq_portmidi/latex/
 doc/dox/seq_portmidi/seq66_lib_seq_portmidi.pdf
 doc/dox/seq_rtmidi/latex/
 doc/dox/seq_rtmidi/seq66_lib_seq_rtmidi.pdf
+
+**/Makefile.in
