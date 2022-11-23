@@ -1,0 +1,133 @@
+From 9195e61e90283067ee37c8f62dd8b2680615b78f Mon Sep 17 00:00:00 2001
+From: Marius CACHELIN <marius.cachelin@iot.bzh>
+Date: Sun, 21 Aug 2022 16:31:04 +0200
+Subject: [PATCH 1/3] fix error in midi_control_event
+
+---
+ libseq66/src/play/performer.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/libseq66/src/play/performer.cpp b/libseq66/src/play/performer.cpp
+index 4297047d..694b9847 100644
+--- a/libseq66/src/play/performer.cpp
++++ b/libseq66/src/play/performer.cpp
+@@ -5630,7 +5630,8 @@ performer::midi_control_event (const event & ev, bool recording)
+                     automation::action a = incoming.action_code();
+                     bool invert = incoming.inverse_active();
+                     int d0 = incoming.d0();
+-                    int d1 = incoming.d1();
++                    // int d1 = incoming.d1();
++                    int d1 = ev.d1();
+                     int index = incoming.control_code(); /* in lieu of d1() */
+                     good = mop.call(a, d0, d1, index, invert);
+                 }
+-- 
+2.25.1
+
+
+From c968a6c80123050c9399cc3d9f3d5ac8c3393256 Mon Sep 17 00:00:00 2001
+From: Marius CACHELIN <marius.cachelin@iot.bzh>
+Date: Wed, 14 Sep 2022 08:46:16 +0200
+Subject: [PATCH 2/3] add gitignore
+
+---
+ .gitignore | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/.gitignore b/.gitignore
+index 57fe1b3a..da414bf2 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -199,3 +199,5 @@ doc/dox/seq_portmidi/latex/
+ doc/dox/seq_portmidi/seq66_lib_seq_portmidi.pdf
+ doc/dox/seq_rtmidi/latex/
+ doc/dox/seq_rtmidi/seq66_lib_seq_rtmidi.pdf
++
++**/Makefile.in
+-- 
+2.25.1
+
+
+From e03efb6935590f9342ebcbd50ba36f88000d37ef Mon Sep 17 00:00:00 2001
+From: Marius CACHELIN <marius.cachelin@iot.bzh>
+Date: Wed, 23 Nov 2022 08:13:35 +0100
+Subject: [PATCH 3/3] add support for set bpm from midi
+
+---
+ libseq66/include/ctrl/automation.hpp |  2 +-
+ libseq66/include/play/performer.hpp  |  5 +++++
+ libseq66/src/play/performer.cpp      | 22 +++++++++++++++++++++-
+ 3 files changed, 27 insertions(+), 2 deletions(-)
+
+diff --git a/libseq66/include/ctrl/automation.hpp b/libseq66/include/ctrl/automation.hpp
+index c1c2f70d..a38c4d4a 100644
+--- a/libseq66/include/ctrl/automation.hpp
++++ b/libseq66/include/ctrl/automation.hpp
+@@ -233,7 +233,7 @@ enum class slot
+     panic,              /**< 42: The Panic Button.                          */
+     visibility,         /**< 43: Toggle the visibility of the main window.  */
+     save_session,       /**< 44: Save the MIDI and configuration files now. */
+-    reserved_45,        /**< 45: Reserved for expansion.                    */
++    bpm_set,            /**< 45: Reserved for expansion.                    */
+     reserved_46,        /**< 46: Reserved for expansion.                    */
+     reserved_47,        /**< 47: Reserved for expansion.                    */
+     reserved_48,        /**< 48: Reserved for expansion.                    */
+diff --git a/libseq66/include/play/performer.hpp b/libseq66/include/play/performer.hpp
+index a6ae2b3d..abab19a2 100644
+--- a/libseq66/include/play/performer.hpp
++++ b/libseq66/include/play/performer.hpp
+@@ -3486,6 +3486,11 @@ public:
+         automation::action a, int d0, int d1,
+         int index, bool inverse
+     );
++    bool automation_set_bpm
++    (
++        automation::action a, int d0, int d1,
++        int index, bool inverse
++    );
+     bool automation_bpm_up_dn
+     (
+         automation::action a, int d0, int d1,
+diff --git a/libseq66/src/play/performer.cpp b/libseq66/src/play/performer.cpp
+index 694b9847..57d02f73 100644
+--- a/libseq66/src/play/performer.cpp
++++ b/libseq66/src/play/performer.cpp
+@@ -6286,6 +6286,26 @@ performer::automation_no_op
+     return false;
+ }
+ 
++bool
++performer::automation_set_bpm
++(
++    automation::action a, int d0, int d1,
++    int index, bool inverse
++)
++{
++    std::string name = "BPM";
++    print_parameters(name, a, d0, d1, index, inverse);
++
++    if (a == automation::action::toggle)        /* for key-presses      */
++        set_beats_per_minute(d1);
++    else if (a == automation::action::on)
++        set_beats_per_minute(d1);
++    else if (a == automation::action::off)
++        set_beats_per_minute(d1);
++
++    return true;
++}
++
+ /**
+  *  Implements BPM Up and BPM Down for MIDI control.  There would be no need
+  *  for two BPM configuration lines for MIDI control, except that we need two
+@@ -8142,7 +8162,7 @@ performer::sm_auto_func_list [] =
+         automation::slot::save_session,
+         &performer::automation_save_session
+     },
+-    { automation::slot::reserved_45, &performer::automation_no_op        },
++    { automation::slot::bpm_set, &performer::automation_set_bpm        },
+     { automation::slot::reserved_46, &performer::automation_no_op        },
+     { automation::slot::reserved_47, &performer::automation_no_op        },
+     { automation::slot::reserved_48, &performer::automation_no_op        },
+-- 
+2.25.1
+
