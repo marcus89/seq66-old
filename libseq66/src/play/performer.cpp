@@ -6286,6 +6286,26 @@ performer::automation_no_op
     return false;
 }
 
+bool
+performer::automation_set_bpm
+(
+    automation::action a, int d0, int d1,
+    int index, bool inverse
+)
+{
+    std::string name = "BPM";
+    print_parameters(name, a, d0, d1, index, inverse);
+
+    if (a == automation::action::toggle)        /* for key-presses      */
+        set_beats_per_minute(d1);
+    else if (a == automation::action::on)
+        set_beats_per_minute(d1);
+    else if (a == automation::action::off)
+        set_beats_per_minute(d1);
+
+    return true;
+}
+
 /**
  *  Implements BPM Up and BPM Down for MIDI control.  There would be no need
  *  for two BPM configuration lines for MIDI control, except that we need two
@@ -8142,7 +8162,7 @@ performer::sm_auto_func_list [] =
         automation::slot::save_session,
         &performer::automation_save_session
     },
-    { automation::slot::reserved_45, &performer::automation_no_op        },
+    { automation::slot::bpm_set, &performer::automation_set_bpm        },
     { automation::slot::reserved_46, &performer::automation_no_op        },
     { automation::slot::reserved_47, &performer::automation_no_op        },
     { automation::slot::reserved_48, &performer::automation_no_op        },

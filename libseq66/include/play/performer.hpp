@@ -3486,6 +3486,11 @@ public:
         automation::action a, int d0, int d1,
         int index, bool inverse
     );
+    bool automation_set_bpm
+    (
+        automation::action a, int d0, int d1,
+        int index, bool inverse
+    );
     bool automation_bpm_up_dn
     (
         automation::action a, int d0, int d1,

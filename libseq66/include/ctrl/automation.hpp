@@ -233,7 +233,7 @@ enum class slot
     panic,              /**< 42: The Panic Button.                          */
     visibility,         /**< 43: Toggle the visibility of the main window.  */
     save_session,       /**< 44: Save the MIDI and configuration files now. */
-    reserved_45,        /**< 45: Reserved for expansion.                    */
+    bpm_set,            /**< 45: Reserved for expansion.                    */
     reserved_46,        /**< 46: Reserved for expansion.                    */
     reserved_47,        /**< 47: Reserved for expansion.                    */
     reserved_48,        /**< 48: Reserved for expansion.                    */
