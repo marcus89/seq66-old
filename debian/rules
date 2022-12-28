@@ -33,9 +33,9 @@ override_dh_shlibdeps:
 	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info -l$(shell pwd)/lib/x86_64-linux-gnu
 
 override_dh_strip:
-	dh_strip -Xlibseq66 -Xseq_rtmidi --dbg-package=seq66-dbg
-	dh_strip -Xseq66 -Xseq-rtmidi --dbg-package=libseq66-dbg
+	#dh_strip -Xlibseq66 -Xseq_rtmidi --dbg-package=seq66-dbg
+	#dh_strip -Xseq66 -Xseq-rtmidi --dbg-package=libseq66-dbg
 	dh_strip -Xseq66 -Xlibseq66 -Xseq-rtmidi
-	dh_strip -Xseq66 -Xlibseq66 --dbg-package=seq-rtmidi-dbg
+	#dh_strip -Xseq66 -Xlibseq66 --dbg-package=seq-rtmidi-dbg
 
 # vim: ft=make
