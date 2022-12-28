@@ -15,7 +15,8 @@ Build-Depends: debhelper (>= 9),
     qtbase5-dev-tools,
     qtdeclarative5-dev-tools,
     qtchooser,
-    qt5-qmake
+    qt5-qmake,
+    liblo-dev,
 Standards-Version: 3.9.8
 Homepage: https://github.com/ahlstromcj/seq66.git
 Vcs-Git: git://github.com/ahlstromcj/seq66.git
