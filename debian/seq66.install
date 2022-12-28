@@ -1,5 +1,5 @@
 # debian/seq66.install
 
-usr/bin/*
-usr/share/man/*
+/usr/bin/*
+/usr/share/man/*
 
